@@ -20,12 +20,18 @@ apply plugin: 'com.android.application'
 
             ndk {
                 moduleName = "ARSimpleNative"
+                abiFilters "armeabi-v7a", "arm64-v8a"
             }
         }
 
-        sourceSets.main {
-            jni.srcDirs = []
-            jniLibs.srcDir 'src/main/libs'
+//        sourceSets.main {
+//            jni.srcDirs = []
+//            jniLibs.srcDir 'src/main/libs'
+//        }
+        externalNativeBuild {
+            ndkBuild {
+                path file('src/main/jni/Android.mk')
+            }
         }
     }
 

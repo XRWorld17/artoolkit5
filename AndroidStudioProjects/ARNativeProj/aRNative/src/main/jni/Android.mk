@@ -61,7 +61,7 @@ define add_artoolkit_module
 	LOCAL_SRC_FILES:=lib$1.a
 	include $(PREBUILT_STATIC_LIBRARY)
 endef
-ARTOOLKIT_LIBS := eden argsub_es2 armulti ar aricp arvideo util
+ARTOOLKIT_LIBS := eden argsub_es2 armulti ar aricp arvideo arutil
 LOCAL_PATH := $(ARTOOLKIT_LIBDIR)
 $(foreach module,$(ARTOOLKIT_LIBS),$(eval $(call add_artoolkit_module,$(module))))
 
@@ -101,7 +101,7 @@ endif
 LOCAL_C_INCLUDES := $(ARTOOLKIT_DIR)/../include/android $(ARTOOLKIT_DIR)/../include
 LOCAL_LDLIBS := -llog -lGLESv2 -lz
 LOCAL_WHOLE_STATIC_LIBRARIES := ar
-LOCAL_STATIC_LIBRARIES := eden argsub_es2 armulti aricp arvideo util cpufeatures
+LOCAL_STATIC_LIBRARIES := eden argsub_es2 armulti aricp arvideo arutil cpufeatures
 #LOCAL_SHARED_LIBRARIES += $(CURL_LIBS)
 LOCAL_STATIC_LIBRARIES += $(CURL_LIBS)
 
