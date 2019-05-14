@@ -180,6 +180,7 @@ AndroidStudioProjects/**/jniLibs
 AndroidStudioProjects/**/libs
 AndroidStudioProjects/**/obj
 AndroidStudioProjects/**/build
+AndroidStudioProjects/**/.externalNativeBuild
 
 # Visual Studio build files.
 VisualStudio/vs120/Debug/
