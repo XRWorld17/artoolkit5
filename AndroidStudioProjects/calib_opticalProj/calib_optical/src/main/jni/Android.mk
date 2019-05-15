@@ -49,7 +49,7 @@ define add_artoolkit_module
     LOCAL_SRC_FILES:=lib$1.a
     include $(PREBUILT_STATIC_LIBRARY)
 endef
-ARTOOLKIT_LIBS := eden jpeg argsub_es armulti arosg ar aricp arvideo util
+ARTOOLKIT_LIBS := eden jpeg argsub_es armulti arosg ar aricp arvideo arutil
 LOCAL_PATH := $(ARTOOLKIT_LIBDIR)
 $(foreach module,$(ARTOOLKIT_LIBS),$(eval $(call add_artoolkit_module,$(module))))
 
@@ -93,7 +93,7 @@ LOCAL_C_INCLUDES += $(CURL_DIR)/include
 LOCAL_LDLIBS += -llog -lGLESv1_CM -lz
 #LOCAL_SHARED_LIBRARIES += $(CURL_LIBS)
 LOCAL_WHOLE_STATIC_LIBRARIES += ar
-LOCAL_STATIC_LIBRARIES += eden jpeg argsub_es armulti arosg aricp arvideo util cpufeatures
+LOCAL_STATIC_LIBRARIES += eden jpeg argsub_es armulti arosg aricp arvideo arutil cpufeatures
 LOCAL_STATIC_LIBRARIES += $(CURL_LIBS)
 
 include $(BUILD_SHARED_LIBRARY)

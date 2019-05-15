@@ -190,7 +190,7 @@ public abstract class ARActivity extends /*AppCompat*/Activity implements Camera
 
         Log.i(TAG, "onStart(): called");
         mActivity = this;
-        if (false == ARToolKit.getInstance().initialiseNativeWithOptions(this.getCacheDir().getAbsolutePath(),
+        if (!ARToolKit.getInstance().initialiseNativeWithOptions(this.getCacheDir().getAbsolutePath(),
                                                                          pattSize,
                                                                          pattCountMax)) {
             // Use cache directory for Data files.
@@ -345,10 +345,10 @@ public abstract class ARActivity extends /*AppCompat*/Activity implements Camera
         if (ARToolKit.getInstance().startWithPushedVideo(width, height, "NV21",null, cameraIndex, cameraIsFrontFacing)) {
             //pixelformat default NV21,camerapara path null??? wwb
             // Expects Data to be already in the cache dir. This can be done with the AssetUnpacker.
-            Log.i(TAG, "cameraPreviewStarted(): Camera initialised");
+            Log.i(TAG, "-art- cameraPreviewStarted(): Camera initialised");
         } else {
             // Error
-            Log.e(TAG, "cameraPreviewStarted(): Error initialising camera. Cannot continue.");
+            Log.e(TAG, "-art- cameraPreviewStarted(): Error initialising camera. Cannot continue.");
             finish();
         }
 
