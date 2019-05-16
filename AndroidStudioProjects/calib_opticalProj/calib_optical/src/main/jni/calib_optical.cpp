@@ -363,7 +363,7 @@ JNIEXPORT void JNICALL JNIFUNCTION_NATIVE(nativeDisplayParametersChanged(JNIEnv*
 
 JNIEXPORT jboolean JNICALL JNIFUNCTION_NATIVE(nativeSetCalibrationParameters(JNIEnv* env, jobject object, jint eyeSelection))
 {
-    LOGI("nativeSetCalibrationParameters eyeSelection=%d\n", eyeSelection);
+    LOGI("-ar- nativeSetCalibrationParameters eyeSelection=%d\n", eyeSelection);
 
     gCalibrationEyeSelection = eyeSelection;
 
@@ -598,7 +598,7 @@ static void nativeVideoGetCparamCallback(const ARParam *cparam_p, void *userdata
 	if (cparam_p) cparam = *cparam_p;
 	else {
         arParamClearWithFOVy(&cparam, videoWidth, videoHeight, M_PI_4); // M_PI_4 radians = 45 degrees.
-        LOGE("Using default camera parameters for %dx%d image size, 45 degrees vertical field-of-view.", videoWidth, videoHeight);
+        LOGE("-ar- Using default camera parameters for %dx%d image size, 45 degrees vertical field-of-view.", videoWidth, videoHeight);
 	}
 	if (cparam.xsize != videoWidth || cparam.ysize != videoHeight) {
 #ifdef DEBUG
@@ -1274,7 +1274,7 @@ bool captureInit(const VIEW_EYE_t calibrationEye)
 	for (i = 0; i < CALIB_POS1_NUM; i++) {
 		calib_pos[i][0] = calib_posn_norm[i][0] * contentWidth;
 		calib_pos[i][1] = calib_posn_norm[i][1] * contentHeight;
-		LOGI("calib_pos[%d] = {%f, %f}\n", i, calib_pos[i][0], calib_pos[i][1]);
+		LOGI("-ar- calib_pos[%d] = {%f, %f}\n", i, calib_pos[i][0], calib_pos[i][1]);
 	}
 
 	co1 = co2 = 0;
@@ -1342,11 +1342,11 @@ void saveParam(const char *paramPathname, ARdouble fovy, ARdouble aspect, const 
 	int i;
     if (arParamSaveOptical(paramPathname, fovy, aspect, m) < 0) {
 
-        LOGE("Error writing optical parameters file '%s'.\n", paramPathname);
+        LOGE("-ar- Error writing optical parameters file '%s'.\n", paramPathname);
 
     } else {
 
-	    LOGI("Wrote optical parameters to file '%s'.\n,", paramPathname);
+	    LOGI("-ar- Wrote optical parameters to file '%s'.\n,", paramPathname);
     }
 }
 

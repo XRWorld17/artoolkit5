@@ -181,7 +181,7 @@ static EVENT_t flowWaitForEvent(void)
 
 	pthread_mutex_lock(&gEventLock);
 	while (gEvent == EVENT_NONE && !gStop) {
-#if  (defined(__ANDROID__) && (__ANDROID_API__ < 21) && defined(HAVE_PTHREAD_COND_TIMEDWAIT_RELATIVE))
+#if  (defined(__ANDROID__) )//&& (__ANDROID_API__ < 21) && defined(HAVE_PTHREAD_COND_TIMEDWAIT_RELATIVE))
         // Android "Bionic" libc doesn't implement cancelation, so need to let wait expire somewhat regularly.
         const struct timespec twoSeconds = {2, 0};
 
