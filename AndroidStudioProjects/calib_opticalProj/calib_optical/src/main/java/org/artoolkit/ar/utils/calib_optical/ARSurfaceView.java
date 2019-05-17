@@ -39,6 +39,7 @@ package org.artoolkit.ar.utils.calib_optical;
 
 import android.content.Context;
 import android.opengl.GLSurfaceView;
+import android.util.Log;
 import android.view.MotionEvent;
 
 public class ARSurfaceView extends GLSurfaceView {
@@ -64,7 +65,8 @@ public class ARSurfaceView extends GLSurfaceView {
 
         switch (e.getAction()) {
 
-            case MotionEvent.ACTION_DOWN:
+            case MotionEvent.ACTION_DOWN: //For the phone, triggered by touching screen; for rk glass 1, it's mouse through vysor
+                Log.e("ARSurfaceView", "-AR- onTouchEvent: ACTION_DOWN " );
                 calib_optical_Activity.nativeHandleTouchAtLocation((int) x, (int) y);
                 break;
 

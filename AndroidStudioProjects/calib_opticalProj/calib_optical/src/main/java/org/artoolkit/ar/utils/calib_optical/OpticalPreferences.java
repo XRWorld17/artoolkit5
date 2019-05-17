@@ -208,6 +208,7 @@ public class OpticalPreferences extends PreferenceActivity implements
         } else if (key.equals("pref_stereoDisplay")) {
             adjustEyeSelectionNames();
         } else if (key.equals("pref_eyeSelection")) {
+            Log.d(TAG, "-ar- onSharedPreferenceChanged: pref_eyeSelection" );
             eyeSelection.setSummary(eyeSelection.getEntry());
         }
     }

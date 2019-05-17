@@ -54,6 +54,7 @@ import android.support.annotation.NonNull;
 import android.util.DisplayMetrics;
 import android.util.Log;
 import android.view.Display;
+import android.view.KeyEvent;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
@@ -160,6 +161,7 @@ public class calib_optical_Activity extends Activity {
             }
         }
         if (needActionBar) {
+            Log.i(TAG, "onCreate(): requestWindowFeature FEATURE_ACTION_BAR");
             requestWindowFeature(Window.FEATURE_ACTION_BAR);
         } else {
             requestWindowFeature(Window.FEATURE_NO_TITLE);
@@ -344,6 +346,35 @@ public class calib_optical_Activity extends Activity {
         if (!nativeHandleBackButton()) {
             super.onBackPressed();
         }
+    }
+
+    @Override
+    public boolean onKeyUp(int keyCode, KeyEvent event) {
+
+        Log.d(TAG, "-ar- the keycode is " + keyCode );
+
+        switch (keyCode) {
+            case KeyEvent.KEYCODE_DPAD_CENTER:
+                Log.d(TAG, "-ar- KEYCODE_DPAD_CENTER ~nativeHandleTouchAtLocation" );
+                calib_optical_Activity.nativeHandleTouchAtLocation((int) 0, (int) 0);
+                break;
+            case KeyEvent.KEYCODE_DPAD_DOWN:
+                Log.d(TAG, "-ar- KEYCODE_DPAD_DOWN" );
+                break;
+            case KeyEvent.KEYCODE_DPAD_UP:
+                Log.d(TAG, "-ar- KEYCODE_DPAD_UP" );
+                break;
+            case KeyEvent.KEYCODE_BACK:
+                Log.d(TAG, "-ar- KEYCODE_BACK " );
+                //calib_optical_Activity.nativeHandleTouchAtLocation((int) 0, (int) 0);
+                //finish();
+                break;
+            default:
+                break;
+        }
+
+        return super.onKeyUp(keyCode, event);
+        //return true;
     }
 
     @Override
