@@ -287,11 +287,11 @@ int calc_optical(ARdouble global[][3], ARdouble IdealScreen[][2], const int numP
     // right is +x, up is -y, and forward is -z. So negate y and z coords to get things
     // in OpenGL-style.
 	eye[1] = -eye[1]; eye[2] = -eye[2];
-	ARLOG("Expressed relative to camera axes, eye is %.1f mm to the %s, %.1f mm %s, and %.1f mm %s the camera.\n",
+	ARLOG("-AR- Expressed relative to camera axes, eye is %.1f mm to the %s, %.1f mm %s, and %.1f mm %s the camera.\n",
           FABS(eye[0]), (eye[0] >= 0.0 ? "right" : "left"),
           FABS(eye[1]), (eye[1] >= 0.0 ? "above" : "below"),
           FABS(eye[2]), (eye[2] >= 0.0 ? "behind" : "in front of"));
-	ARLOG("Eyepoint error is +/- %5f.\n", eyeError);
+	ARLOG("-AR- Eyepoint error is +/- %5f.\n", eyeError);
 
 	// Now calculate the axes of the viewer.
 	// For now, just use the fixed ordering of the crosshairs
@@ -348,7 +348,7 @@ int calc_optical(ARdouble global[][3], ARdouble IdealScreen[][2], const int numP
 	m[2] = normal[0]; m[6] = normal[1]; m[10] = normal[2]; m[14] = -eye[0]*normal[0] - eye[1]*normal[1] - eye[2]*normal[2];
 	m[3] = 0.0;       m[7] = 0.0;       m[11] = 0.0;       m[15] = 1.0;
 
-	ARLOG("Expressed relative to eye axes, camera is %.1f mm to the %s, %.1f mm %s, and %.1f mm %s the eye.\n",
+	ARLOG("-AR- Expressed relative to eye axes, camera is %.1f mm to the %s, %.1f mm %s, and %.1f mm %s the eye.\n",
           FABS(m[12]), (m[12] >= 0.0 ? "right" : "left"),
           FABS(m[13]), (m[13] >= 0.0 ? "above" : "below"),
           FABS(m[14]), (m[14] >= 0.0 ? "behind" : "in front of"));

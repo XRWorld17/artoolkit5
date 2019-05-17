@@ -39,7 +39,7 @@
 	        android:dialogTitle="@string/pref_title_eyeSelection"
 	        android:entries="@array/pref_entries_eyeSelection"
 	        android:entryValues="@array/pref_entryValues_eyeSelection"
-	        android:defaultValue="0"
+	        android:defaultValue="1"
 	       	/>
    	</PreferenceCategory>
     <PreferenceCategory 

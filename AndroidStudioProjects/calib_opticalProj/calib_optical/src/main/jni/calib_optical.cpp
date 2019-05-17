@@ -100,7 +100,8 @@ typedef enum {
 #define  LOGE(...)  __android_log_print(ANDROID_LOG_ERROR,LOG_TAG,__VA_ARGS__)
 
 
-#define FONT_SIZE 5.0f
+#define FONT_SIZE 12.0f
+#define DEBUG
 
 
 // ============================================================================
@@ -201,7 +202,7 @@ static VIEW_CONTEXT_t *viewContexts;
 
 // Calibration params.
 
-static int gCalibrationEyeSelection = 0; // left.
+static int gCalibrationEyeSelection = 0; // 0 left, 1 right.
 static VIEW_EYE_t gCalibrationEye = VIEW_LEFTEYE;
 static int co1 = -1; // Index into which x-y coordinate we are capturing.
 static int co2 = -1; // Index into which z coordinate we are capturing.
@@ -389,6 +390,7 @@ JNIEXPORT jboolean JNICALL JNIFUNCTION_NATIVE(nativeStart(JNIEnv* env, jobject o
         viewContexts[0].views[0] = &(views[0]);
         viewContexts[0].views[0]->viewEye = (!stereoDisplayReverseLeftRight ? VIEW_LEFTEYE : VIEW_RIGHTEYE); // Left first, unless reversed.
         viewContexts[0].views[0]->drawBuffer = GL_BACK;
+
         viewContexts[1].viewCount = 1;
         arMallocClear(viewContexts[1].views, VIEW_t *, viewContexts[1].viewCount);
         viewContexts[1].views[0] = &(views[1]);
@@ -399,11 +401,13 @@ JNIEXPORT jboolean JNICALL JNIFUNCTION_NATIVE(nativeStart(JNIEnv* env, jobject o
         viewContextCount = 1;
         arMallocClear(viewContexts, VIEW_CONTEXT_t, viewContextCount);
         if (stereoDisplayMode == STEREO_DISPLAY_MODE_INACTIVE) {
+            LOGI("-ar- STEREO_DISPLAY_MODE_INACTIVE (func:%s,Line:%d)\n", __FUNCTION__,__LINE__);// goes here,wwb 5.17
             // mono.
             viewContexts[0].viewCount = 1;
             arMallocClear(viewContexts[0].views, VIEW_t *, viewContexts[0].viewCount);
             viewContexts[0].views[0] = &(views[0]);
-            viewContexts[0].views[0]->viewEye = VIEW_LEFTEYE;
+            //viewContexts[0].views[0]->viewEye = VIEW_LEFTEYE;//
+            viewContexts[0].views[0]->viewEye = VIEW_RIGHTEYE;//note: hardcoded
             viewContexts[0].views[0]->drawBuffer = GL_BACK;
         } else {
             // stereo.
@@ -423,6 +427,7 @@ JNIEXPORT jboolean JNICALL JNIFUNCTION_NATIVE(nativeStart(JNIEnv* env, jobject o
     EdenSurfacesInit(viewContextCount, 16); // Allow space for 16 textures.
     EdenGLFontInit(viewContextCount);
     EdenGLFontSetSize(FONT_SIZE);
+    //Edenglf
     EdenGLFontSetFont(EDEN_GL_FONT_ID_Stroke_Roman);
     EdenGLFontSetWordSpacing(0.8f);
     EdenMessageInit(viewContextCount);
@@ -1091,12 +1096,16 @@ JNIEXPORT void JNICALL JNIFUNCTION_NATIVE(nativeDrawFrame(JNIEnv* env, jobject o
 
 	// This loop is once per view (i.e. once per eye).
 	for (i = 0; i < viewContexts[contextIndex].viewCount; i++) {
+        //LOGI("-ar- view contextIndex=%d，viewCount=%d (func:%s,Line:%d)\n", contextIndex,viewContexts[contextIndex].viewCount, __FUNCTION__,__LINE__);
         view = viewContexts[contextIndex].views[i];
-        viewEye = view->viewEye;
+        viewEye = view->viewEye;//view->
 
         if (stereoDisplayMode == STEREO_DISPLAY_MODE_FRAME_SEQUENTIAL) {
+            LOGI("-ar- STEREO_DISPLAY_MODE_FRAME_SEQUENTIAL (func:%s,Line:%d)\n", viewEye, __FUNCTION__,__LINE__);
             if (viewEye != stereoDisplaySequentialNext) continue;
         }
+
+        //LOGI("-ar- viewEye=%d (func:%s,Line:%d)\n", viewEye, __FUNCTION__,__LINE__);
 
         // Select correct buffer for this context. (It has already been cleared.)
 		//glDrawBuffer(view->drawBuffer);
@@ -1142,7 +1151,11 @@ JNIEXPORT void JNICALL JNIFUNCTION_NATIVE(nativeDrawFrame(JNIEnv* env, jobject o
         glStateCacheDisableLighting();
         glStateCacheDisableTex2D();
 
+
+        //default left: vieweye=gcalib=1; then app menu set right: vieweye=1, gcalib=2
+        //LOGI("-ar- viewEye=%d,gCalibrationEye = %d (func:%s,Line:%d)\n", viewEye,gCalibrationEye, __FUNCTION__,__LINE__);
         if (flowStateGet() == FLOW_STATE_CAPTURING && viewEye == gCalibrationEye) {
+
             // Draw cross hairs.
             glLineWidth(3.0f);
             glColor4ub(255, 255, 255, 255);
@@ -1152,6 +1165,7 @@ JNIEXPORT void JNICALL JNIFUNCTION_NATIVE(nativeDrawFrame(JNIEnv* env, jobject o
 
             // Draw box.
             if (gPatt_found) {
+                LOGI("nativeDrawFrame drawAttention\n");
                 drawAttention(calib_pos[co1][0], calib_pos[co1][1], 40.0, co2);
             }
         }
@@ -1226,14 +1240,6 @@ JNIEXPORT void JNICALL JNIFUNCTION_NATIVE(nativeDrawFrame(JNIEnv* env, jobject o
 
     //if (gVideoSeeThrough) gARTImage = NULL; // All views done, can invalidate image data now.
 
-
-
-
-
-
-
-
-
 }
 
 JNIEXPORT void JNICALL JNIFUNCTION_NATIVE(nativeHandleTouchAtLocation(JNIEnv* env, jobject object, jint x, jint y))
@@ -1266,6 +1272,7 @@ bool captureInit(const VIEW_EYE_t calibrationEye)
 	};
 
 	gCalibrationEye = calibrationEye;
+    LOGI("-ar- gCalibrationEye = %d (func:%s,Line:%d)\n", gCalibrationEye, __FUNCTION__,__LINE__);
 
 	// Adjust the on-screen calibration positions from normalised positions to the actual size we have.
     for (viewIndex = 0; views[viewIndex].viewEye != gCalibrationEye; viewIndex++); // Locate the view we're calibrating.
@@ -1289,9 +1296,9 @@ bool capture(int *co1_p, int *co2_p)
 	if (co1 >= 0 && co1 < CALIB_POS1_NUM && co2 >= 0 && co2 < CALIB_POS2_NUM) {
 
 		if (gPatt_found) {
-			ARLOG("Position %d (%s) captured.\n", co1 + 1, (co2 == 1 ? "near" : "far"));
-			ARLOG("-- 3D position %5f, %5f, %5f.\n", gPatt_trans[0][3], gPatt_trans[1][3], gPatt_trans[2][3]);
-			ARLOG("-- 2D position %5f, %5f.\n", calib_pos[co1][0], calib_pos[co1][1]);
+			ARLOG("-AR- Position %d (%s) captured.\n", co1 + 1, (co2 == 1 ? "near" : "far"));
+			ARLOG("-AR- -- 3D position %5f, %5f, %5f.\n", gPatt_trans[0][3], gPatt_trans[1][3], gPatt_trans[2][3]);
+			ARLOG("-AR- -- 2D position %5f, %5f.\n", calib_pos[co1][0], calib_pos[co1][1]);
 			calib_pos3d[co1][co2][0] = gPatt_trans[0][3];
 			calib_pos3d[co1][co2][1] = gPatt_trans[1][3];
 			calib_pos3d[co1][co2][2] = gPatt_trans[2][3];

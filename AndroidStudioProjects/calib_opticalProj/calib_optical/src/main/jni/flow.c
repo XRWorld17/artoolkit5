@@ -225,8 +225,14 @@ static void *flowThread(void *arg)
 
 		for (calibrationEyeCount = 0; calibrationEyeCount < (gStereoDisplay ? 2 : 1); calibrationEyeCount++) {
 
-			if (calibrationEyeCount == 0) calibrationEye = (gEyeSelection ? VIEW_RIGHTEYE : VIEW_LEFTEYE);
-			else calibrationEye = (gEyeSelection ? VIEW_LEFTEYE : VIEW_RIGHTEYE);
+			if (calibrationEyeCount == 0) {
+			    calibrationEye = (gEyeSelection ? VIEW_RIGHTEYE : VIEW_LEFTEYE);
+                ARLOG("-ar- flowThread 0 calibrationEye= %d.\n", calibrationEye);
+			}
+			else {
+			    calibrationEye = (gEyeSelection ? VIEW_LEFTEYE : VIEW_RIGHTEYE);
+                ARLOG("-ar- flowThread calibrationEye= %d.\n", calibrationEye);
+			}
 
 			char *buf;
 			asprintf(&buf, "%s"
@@ -310,7 +316,9 @@ static void *flowThread(void *arg)
 				flowSetEventMask(EVENT_NONE);
 				flowStateSet(FLOW_STATE_CALIBRATING);
 				EdenMessageShow((const unsigned char *)"Calculating optical parameters...");
+
 				bool ok = (calib(&fovy, &aspect, m) != -1);
+
 	    		EdenMessageHide();
 
 				// Calibration complete. Post results as status.
@@ -324,14 +332,15 @@ static void *flowThread(void *arg)
 				} else {
 					char *dir;
 				    //const char calibFilenameMono[] = "optical_param.dat";
-				    const char calibFilenameL[] = "optical_param_left.dat";
-				    const char calibFilenameR[] = "optical_param_right.dat";
+				    const char calibFilenameL[] = "artk_optical_param_left.dat";
+				    const char calibFilenameR[] = "artk_optical_param_right.dat";
 					char *paramPathname;
 
 					// Save the parameter file.
 					dir = arUtilGetResourcesDirectoryPath(AR_UTIL_RESOURCES_DIRECTORY_BEHAVIOR_USE_USER_ROOT, NULL);
 				    asprintf(&paramPathname, "%s/%s", dir, (calibrationEye == VIEW_LEFTEYE ? calibFilenameL : calibFilenameR));
 				    free(dir);
+
 	            	saveParam(paramPathname, fovy, aspect, m);
 
 	    			asprintf((char **)&buf, calibCompleteStringOK, fovy, aspect, m[12], m[13], m[14], paramPathname);
