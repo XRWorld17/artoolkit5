@@ -104,11 +104,11 @@ int arParamDispOptical(const ARdouble fovy, const ARdouble aspect, const ARdoubl
 {
     int     i;
 	
-    ARLOG("--------------------------------------\n");
-	ARLOG("Field-of-view vertical = %.1f, horizontal = %.1f degrees, aspect ratio = %.3f\n", fovy, fovy*aspect, aspect);
-	ARLOG("Transformation to camera, in eye coordinate system = \n");
-	for (i = 0; i < 4; i++) ARLOG("[% .3f % .3f % .3f] [% 6.1f]\n", m[i], m[i + 4], m[i + 8], m[i + 12]);
-    ARLOG("--------------------------------------\n");
+    ARLOG("-AR-------------------------------------\n");
+	ARLOG("-AR- Field-of-view vertical = %.1f, horizontal = %.1f degrees, aspect ratio = %.3f\n", fovy, fovy*aspect, aspect);
+	ARLOG("-AR- Transformation to camera, in eye coordinate system = \n");
+	for (i = 0; i < 4; i++) ARLOG("-AR- [% .3f % .3f % .3f] [% 6.1f]\n", m[i], m[i + 4], m[i + 8], m[i + 12]);
+    ARLOG("-AR-------------------------------------\n");
 	
     return 0;
 }

@@ -303,6 +303,8 @@ void VirtualEnvironmentHandleARMarkerWasUpdated(int markerIndex, ARPose poseIn)
     // Look through all objects for objects which are linked to this marker.
     for (i = 0; i < objectCount; i++) {
         if (objects[i].markerIndex == markerIndex) {
+            //int arOSGSetModelPose(AROSG *arOsg, const int index, const ARdouble modelview[16]);
+            //modelview A 4x4 OpenGL transform matrix (column-major order) representing the modelview transform of the model.
             arOSGSetModelPose(VirtualEnvironment_AROSG, objects[i].modelIndex, poseIn.T);
         }
     }

@@ -548,7 +548,7 @@ int arParamSaveOptical(const char *filename, const ARdouble fovy, const ARdouble
 
     fp = fopen(filename, "wb");
     if( fp == NULL ) {
-		ARLOGe("Error (%d): unable to open optical parameters file \"%s\" for writing.\n", errno, filename);
+		ARLOGe("-ar- Error (%d): unable to open optical parameters file \"%s\" for writing.\n", errno, filename);
 		ARLOGperror(NULL);
 		return -1;
 	}
@@ -603,7 +603,7 @@ int arParamLoadOptical(const char *filename, ARdouble *fovy_p, ARdouble *aspect_
 
     fp = fopen(filename, "rb");
     if( fp == NULL ) {
-		ARLOGe("Error (%d): unable to open optical parameters file \"%s\" for reading.\n", errno, filename);
+		ARLOGe("-ar- Error (%d): unable to open optical parameters file \"%s\" for reading.\n", errno, filename);
 		ARLOGperror(NULL);
 		return -1;
 	}

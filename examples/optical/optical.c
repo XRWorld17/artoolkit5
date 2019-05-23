@@ -601,7 +601,7 @@ static void mainLoop(void)
     int markerNum;
 	ARdouble err;
     ARPose opticalPose;
-    int             i, j, k;
+    int  i, j, k;
 	
 	// Calculate time delta.
 	ms = glutGet(GLUT_ELAPSED_TIME);
@@ -692,6 +692,7 @@ static void mainLoop(void)
 				}
 	
 				// We have a new pose, so set that.
+                //arglCameraViewRH Create an OpenGL viewing transformation matrix
 				arglCameraViewRH((const ARdouble (*)[4])markersSquare[i].trans, markersSquare[i].pose.T, 1.0f /*VIEW_SCALEFACTOR*/);
 				// Tell any dependent objects about the update.
                 
@@ -708,7 +709,7 @@ static void mainLoop(void)
                 mtxMultMatrixd(opticalPose.T, markersSquare[i].pose.T);
 #endif
                 
-                VirtualEnvironmentHandleARMarkerWasUpdated(i, opticalPose);
+                VirtualEnvironmentHandleARMarkerWasUpdated(i, opticalPose);//opticalPose: the modelview transform of the model
 			
 			} else {
 			

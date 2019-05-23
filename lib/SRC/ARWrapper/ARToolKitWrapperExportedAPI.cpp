@@ -877,6 +877,7 @@ extern "C" {
 	//EXPORT_API bool arwGetMarkerPatternConfig(int markerUID, int patternID, float matrix[16], float *width, float *height);
 	//EXPORT_API bool arwGetMarkerPatternImage(int markerUID, int patternID, Color *buffer);
 
+    //TODO:
     //EXPORT_API bool arwLoadOpticalParams(const char *optical_param_name, const char *optical_param_buff, const int optical_param_buffLen, float *fovy_p, float *aspect_p, float m[16], float p[16]);
 	// ------------------------------------------------------------------------------------
 }

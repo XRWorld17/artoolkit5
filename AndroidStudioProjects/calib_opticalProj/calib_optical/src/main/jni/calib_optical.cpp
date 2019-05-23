@@ -317,7 +317,7 @@ JNIEXPORT jboolean JNICALL JNIFUNCTION_NATIVE(nativeCreate(JNIEnv* env, jobject 
 
 	// Loading pattern.
 	if ((gPatt_id = arPattLoad(gARPattHandle, patt_name)) < 0) {
-		LOGE("Error loading pattern file %s.\n", patt_name);
+		LOGE("-ar- Error loading pattern file %s.\n", patt_name);
 		arPattDeleteHandle(gARPattHandle);
 		gARPattHandle = NULL;
 		return false;
