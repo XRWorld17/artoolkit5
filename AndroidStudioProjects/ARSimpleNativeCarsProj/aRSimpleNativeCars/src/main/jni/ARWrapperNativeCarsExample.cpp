@@ -47,7 +47,7 @@
  */
 
 #include <AR/gsub_es.h>
-#include <Eden/glm.h>
+#include <Eden/glm.h> //GLM实现了用C语言对Wavefront公司的3D模型OBJ文件的常用操作，用于简单的3D游戏编程
 #include <jni.h>
 #include <ARWrapper/ARToolKitWrapperExportedAPI.h>
 #include <unistd.h> // chdir()
