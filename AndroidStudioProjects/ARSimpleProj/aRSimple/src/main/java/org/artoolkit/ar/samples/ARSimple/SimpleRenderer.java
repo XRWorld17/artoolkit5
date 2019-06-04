@@ -49,9 +49,14 @@
 
 package org.artoolkit.ar.samples.ARSimple;
 
+import android.opengl.GLES10;
+import android.util.Log;
+
 import org.artoolkit.ar.base.ARToolKit;
 import org.artoolkit.ar.base.rendering.ARRenderer;
 import org.artoolkit.ar.base.rendering.Cube;
+
+import java.util.Arrays;
 
 import javax.microedition.khronos.opengles.GL10;
 
@@ -85,7 +90,11 @@ public class SimpleRenderer extends ARRenderer {
 
         // Apply the ARToolKit projection matrix
         gl.glMatrixMode(GL10.GL_PROJECTION);
-        gl.glLoadMatrixf(ARToolKit.getInstance().getProjectionMatrix(), 0);
+
+        //float[] proj = ARToolKit.getInstance().getProjectionMatrix();
+        float[] proj = ARToolKit.getInstance().getProjectionMatrixOptiCalib();
+        Log.d("TAG","-ar- projmatrix: "+ Arrays.toString(proj));
+        gl.glLoadMatrixf(proj, 0);
 
         gl.glEnable(GL10.GL_CULL_FACE);
         gl.glShadeModel(GL10.GL_SMOOTH);
@@ -95,9 +104,15 @@ public class SimpleRenderer extends ARRenderer {
         // If the marker is visible, apply its transformation, and draw a cube
         if (ARToolKit.getInstance().queryMarkerVisible(markerID)) {
             gl.glMatrixMode(GL10.GL_MODELVIEW);
-            gl.glLoadMatrixf(ARToolKit.getInstance().queryMarkerTransformation(markerID), 0);
+
+            //float[] trans = ARToolKit.getInstance().queryMarkerTransformation(markerID);
+            float[] trans = ARToolKit.getInstance().queryMarkerTransformationOptiCalib(markerID);
+            Log.d("TAG","-ar- trans: "+ Arrays.toString(trans));
+            gl.glLoadMatrixf(trans, 0);
             cube.draw(gl);
         }
 
     }
+
+
 }

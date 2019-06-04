@@ -58,6 +58,7 @@ import android.util.Log;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
+import android.view.View;
 import android.view.ViewConfiguration;
 import android.view.ViewGroup.LayoutParams;
 import android.view.Window;
@@ -275,8 +276,15 @@ public abstract class ARActivity extends /*AppCompat*/Activity implements Camera
         Log.i(TAG, "onResume(): GLSurfaceView created");
 
         // Add the views to the interface
-        mainLayout.addView(preview, new LayoutParams(LayoutParams.FILL_PARENT, LayoutParams.FILL_PARENT));
+        LayoutParams layoutParams = new LayoutParams(LayoutParams.FILL_PARENT, LayoutParams.FILL_PARENT);
+
+        // Set w,h to 1 to get effect for "optical see-through glass"
+        layoutParams.height = 1;
+        layoutParams.width = 1;
+
+        mainLayout.addView(preview, layoutParams);
         mainLayout.addView(glView, new LayoutParams(LayoutParams.FILL_PARENT, LayoutParams.FILL_PARENT));
+
 
         Log.i(TAG, "onResume(): Views added to main layout.");
         if (glView != null) glView.onResume();

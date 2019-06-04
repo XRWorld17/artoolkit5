@@ -43,6 +43,7 @@ import android.opengl.Matrix;
 import android.util.Log;
 
 import java.nio.ByteBuffer;
+import java.util.Arrays;
 
 /**
  * The ARToolKit class is a singleton which manages access to the underlying
@@ -288,6 +289,86 @@ public class ARToolKit {
         return NativeInterface.arwGetProjectionMatrix();
     }
 
+    public float[] getProjectionMatrixOptiCalib() {
+        if (!initedNative) return null;
+
+        float Mt[]= new float[16];//16
+        return mtxPerspectivef(Mt,(float)10.3,(float)2.238,(float)0.01*1000,5*1000);//fovy,aspect from optical-calib
+    }
+
+    float[] mtxMultMatrixf(float M[],  float T[])
+    {
+        float M0[]= new float[16];
+
+        // Copy M to M0 so that result can be returned in M.
+        M0[ 0] = M[ 0]; M0[ 1] = M[ 1]; M0[ 2] = M[ 2]; M0[ 3] = M[ 3];
+        M0[ 4] = M[ 4]; M0[ 5] = M[ 5]; M0[ 6] = M[ 6]; M0[ 7] = M[ 7];
+        M0[ 8] = M[ 8]; M0[ 9] = M[ 9]; M0[10] = M[10]; M0[11] = M[11];
+        M0[12] = M[12]; M0[13] = M[13]; M0[14] = M[14]; M0[15] = M[15];
+
+        M[ 0] = M0[ 0] * T[ 0] + M0[ 4] * T[ 1] + M0[ 8] * T[ 2] + M0[12] * T[ 3];
+        M[ 1] = M0[ 1] * T[ 0] + M0[ 5] * T[ 1] + M0[ 9] * T[ 2] + M0[13] * T[ 3];
+        M[ 2] = M0[ 2] * T[ 0] + M0[ 6] * T[ 1] + M0[10] * T[ 2] + M0[14] * T[ 3];
+        M[ 3] = M0[ 3] * T[ 0] + M0[ 7] * T[ 1] + M0[11] * T[ 2] + M0[15] * T[ 3];
+
+        M[ 4] = M0[ 0] * T[ 4] + M0[ 4] * T[ 5] + M0[ 8] * T[ 6] + M0[12] * T[ 7];
+        M[ 5] = M0[ 1] * T[ 4] + M0[ 5] * T[ 5] + M0[ 9] * T[ 6] + M0[13] * T[ 7];
+        M[ 6] = M0[ 2] * T[ 4] + M0[ 6] * T[ 5] + M0[10] * T[ 6] + M0[14] * T[ 7];
+        M[ 7] = M0[ 3] * T[ 4] + M0[ 7] * T[ 5] + M0[11] * T[ 6] + M0[15] * T[ 7];
+
+        M[ 8] = M0[ 0] * T[ 8] + M0[ 4] * T[ 9] + M0[ 8] * T[10] + M0[12] * T[11];
+        M[ 9] = M0[ 1] * T[ 8] + M0[ 5] * T[ 9] + M0[ 9] * T[10] + M0[13] * T[11];
+        M[10] = M0[ 2] * T[ 8] + M0[ 6] * T[ 9] + M0[10] * T[10] + M0[14] * T[11];
+        M[11] = M0[ 3] * T[ 8] + M0[ 7] * T[ 9] + M0[11] * T[10] + M0[15] * T[11];
+
+        M[12] = M0[ 0] * T[12] + M0[ 4] * T[13] + M0[ 8] * T[14] + M0[12] * T[15];
+        M[13] = M0[ 1] * T[12] + M0[ 5] * T[13] + M0[ 9] * T[14] + M0[13] * T[15];
+        M[14] = M0[ 2] * T[12] + M0[ 6] * T[13] + M0[10] * T[14] + M0[14] * T[15];
+        M[15] = M0[ 3] * T[12] + M0[ 7] * T[13] + M0[11] * T[14] + M0[15] * T[15];
+
+        return M;
+    }
+
+    float[] mtxPerspectivef(float M[],float fovy, float aspect, float zNear, float zFar)
+    {
+        float DTORf = (float)0.01745329251994;
+
+        float T[]= new float[16],M1[]= new float[16];//16
+        M1[0]=1;M1[5]=1;M1[10]=1;M1[15]=1;
+        //Log.d("TAG","-ar- M1: "+ Arrays.toString(M1));
+
+        //float f = 1.0f / tanf(DTORf*fovy/2.0f);
+        double  f = 1.0f / Math.tan(DTORf*fovy/2.0f);
+        float n_f = zNear - zFar;
+
+        // Column 0;
+        T[ 0] = (float)f / aspect;
+        T[ 1] = 0.0f;
+        T[ 2] = 0.0f;
+        T[ 3] = 0.0f;
+
+        // Column 1;
+        T[ 4] = 0.0f;
+        T[ 5] = (float)f;
+        T[ 6] = 0.0f;
+        T[ 7] = 0.0f;
+
+        // Column 2;
+        T[ 8] = 0.0f;
+        T[ 9] = 0.0f;
+        T[10] = (zFar + zNear) / n_f;
+        T[11] = -1.0f;
+
+        // Column 3;
+        T[12] = 0.0f;
+        T[13] = 0.0f;
+        T[14] = 2.0f * zFar * zNear / n_f;
+        T[15] = 0.0f;
+
+        return mtxMultMatrixf(M1, T);
+    }
+
+
     /**
      * Adds a new single marker to the set of currently active markers.
      *
@@ -325,6 +406,23 @@ public class ARToolKit {
     public float[] queryMarkerTransformation(int markerUID) {
         if (!initedNative) return null;
         return NativeInterface.arwQueryMarkerTransformation(markerUID);
+    }
+
+    public float[] queryMarkerTransformationOptiCalib(int markerUID) {
+        if (!initedNative) return null;
+
+        double tmp[] = {1.0, 0.011,-0.001,0.0, -0.011,0.994,0.047,0.0, 0.002, -0.047,0.994,0.0,  -35.4,10.4,-55.4,1.0};//m from optical-calib
+
+        float eyeAdjustmentGL2[] = new float[16];
+        for(int i=0;i<16;i++){eyeAdjustmentGL2[i]=(float)tmp[i];}
+
+
+        float trans[] =  NativeInterface.arwQueryMarkerTransformation(markerUID);
+
+        float trans1[]= new float[16];
+        Matrix.multiplyMM(trans1, 0, eyeAdjustmentGL2, 0, trans, 0);
+
+        return trans1;
     }
 
     /**
